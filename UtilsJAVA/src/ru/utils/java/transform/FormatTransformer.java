@@ -266,9 +266,6 @@ public class FormatTransformer {
 		}
 		
 		public byte[] transform() {
-			// mmd
-			Map<String, String> prevCsvLine = null;
-			
 			parseDocumentRecursively(xml.getRootElement());
 			return getResultsAsByteArray();
 		}
@@ -279,17 +276,14 @@ public class FormatTransformer {
 			String elementTitle = element.getPath();
 			
 			if (isIndexElement(childElements)) {
-				/*mmd*/ //prevCsvLine = null;
 				elementTitle = getIndexTitle(elementTitle);
 				updateElementAndHisChildrenIndexes(elementTitle);
 			} else {
-				//updateElementChildrenIndexes(getIndexTitle(element.getParent().getName()));
-				/*mmd*/ Map<String, String> currCsvLine = formCsvLine(element, elementTitle);
+				Map<String, String> currCsvLine = formCsvLine(element, elementTitle);
 				if (prevCsvLine == null || !joinCsvLine(currCsvLine)) {
 					content.add(currCsvLine);
 					prevCsvLine = currCsvLine;
 				}
-
 			}
 			
 			setElementTitlePosition(elementTitle);
@@ -311,23 +305,10 @@ public class FormatTransformer {
 		}
 		
 		private void updateElementChildrenIndexes(String elementTitle) {
-			// 1. find children
 			for (String childTitle : title) {
 				if (childTitle.startsWith(elementTitle) && !childTitle.equals(elementTitle))
 					elementIndexes.put(childTitle, null);
 			}
-			
-			/* mmd
-			int elementPosition = title.indexOf(elementTitle);
-			 
-			if (elementPosition != -1) {
-				for (int i = elementPosition + 1; i < title.size(); i++) {
-					String childTitle = title.get(i);
-					elementIndexes.put(childTitle, null);
-				}
-			}
-			*/
-			
 		}
 		
 		private Map<String, String> formCsvLine(Element element, String elementTitle) {
