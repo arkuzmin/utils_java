@@ -328,7 +328,7 @@ public class FormatTransformer {
 			for (String t : title) {
 				String prevValue = prevCsvLine.get(t);
 				String currValue = currCsvLine.get(t);
-				if (!(canMerge2Lines = canMergeValues(t, prevValue, currValue))) {
+				if (!(canMerge2Lines = canMergeValues(prevValue, currValue))) {
 					break;
 				}
 			}
@@ -342,15 +342,11 @@ public class FormatTransformer {
 			return canMerge2Lines;
 		}
 		
-		private boolean canMergeValues(String title, String prevValue, String currValue) {
-			boolean result = false;
-			if (title.startsWith("_")) {
-				result = (String.valueOf(prevValue).equals(String.valueOf(currValue)));
-			} else {
-				result = (String.valueOf(prevValue).equals(String.valueOf(currValue))) ||
-						 prevValue == null || currValue == null;
-			}
-			return result;
+		private boolean canMergeValues(String prevValue, String currValue) {
+			return 
+					(prevValue != null && currValue == null) ||
+					(prevValue == null && currValue != null) ||
+					(String.valueOf(prevValue).equals(String.valueOf(currValue)));
 		}
 		
 		
