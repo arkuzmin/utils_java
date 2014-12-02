@@ -20,10 +20,10 @@ public class TestFormatTransformer {
 		
 		File file = new File("K:\\TestXML.xml");
 		SAXReader reader = new SAXReader();
-     	Document doc = reader.read(file);
+    	Document doc = reader.read(file);
 		
 		byte[] csv = FormatTransformer.xmlToCSV(doc, "\t");
-		//Document resultDoc = FormatTransformer.csvToXml(csv, "\t");
+		Document resultDoc = FormatTransformer.csvToXml(csv, "\t");
      //	byte[] csv = FormatTransformer.xmlToExcel(doc, ExcelTypes.XLSX);
      	
      	FileOutputStream fos = new FileOutputStream("K:\\result.csv");
@@ -39,7 +39,7 @@ public class TestFormatTransformer {
 		//byte[] b= FormatTransformer.xmlToCSV(doc, ";");
 	//	Document d = FormatTransformer.csvToXml(c);
 		//System.out.println(c.getTitledContent());
-		//System.out.println(resultDoc.asXML());
+		System.out.println(resultDoc.asXML());
 		
 	}
 }
