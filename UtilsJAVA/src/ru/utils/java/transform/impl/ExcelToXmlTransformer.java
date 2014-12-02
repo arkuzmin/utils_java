@@ -61,7 +61,7 @@ public class ExcelToXmlTransformer implements ToDocumentTransformer {
 	
 	private void readCsvTitle(Sheet sheet) {
 		Row row = sheet.getRow(0);
-		StringBuilder sb = new StringBuilder(CSV_DELIMITER);
+		StringBuilder sb = new StringBuilder("");
 		for (int i = 0; i < row.getLastCellNum(); i++) {
 			Cell cell = row.getCell(i);
 			String content = cell.getStringCellValue();
@@ -74,11 +74,11 @@ public class ExcelToXmlTransformer implements ToDocumentTransformer {
 	private void readCsvContent(Sheet sheet) {
 		for (int i = 1; i < sheet.getLastRowNum(); i++) {
 			Row row = sheet.getRow(i);
-			StringBuilder sb = new StringBuilder(";");
+			StringBuilder sb = new StringBuilder("");
 			for (int j = 0; j < row.getLastCellNum(); j++) {
 				Cell cell = row.getCell(j);
 				String content = cell.getStringCellValue();
-				sb.append(content).append(";");
+				sb.append(content).append(CSV_DELIMITER);
 			}
 			sb.deleteCharAt(sb.length() - 1);
 			csvContent.add(sb.toString());

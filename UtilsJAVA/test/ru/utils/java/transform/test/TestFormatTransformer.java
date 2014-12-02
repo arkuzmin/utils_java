@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 
+import ru.utils.java.transform.impl.ExcelTypes;
 import ru.utils.java.transform.impl.FormatTransformer;
 
 public class TestFormatTransformer {
@@ -21,19 +22,18 @@ public class TestFormatTransformer {
 		//SAXReader reader = new SAXReader();
     	//Document doc = reader.read(file);
 		
-		byte[] csv = FormatTransformer.xmlToCSV(doc, "\t");
-		Document resultDoc = FormatTransformer.csvToXml(csv, "\t");
-     //	byte[] csv = FormatTransformer.xmlToExcel(doc, ExcelTypes.XLSX);
+		//byte[] csv = FormatTransformer.xmlToExcel(doc, ExcelTypes.XLS);
+		//Document resultDoc = FormatTransformer.csvToXml(csv, "\t");
+
+     	//FileOutputStream fos = new FileOutputStream("K:\\result.xls");
+     	//BufferedOutputStream bos = new BufferedOutputStream(fos);
+     	//bos.write(csv);
      	
-     	FileOutputStream fos = new FileOutputStream("K:\\result.csv");
-     	BufferedOutputStream bos = new BufferedOutputStream(fos);
-     	bos.write(csv);
-     	
-     	bos.flush();
-     	bos.close();
+     	//bos.flush();
+     	//bos.close();
      	
 		//FormatTransformer.xmlToExcel(doc, FormatTransformer.ExcelTypes.XLSX);
-		//Document result = FormatTransformer.excelToXml(FormatTransformer.xmlToExcel(doc, FormatTransformer.ExcelTypes.XLS), FormatTransformer.ExcelTypes.XLS);
+		Document resultDoc = FormatTransformer.excelToXml(FormatTransformer.xmlToExcel(doc, ExcelTypes.XLS), ExcelTypes.XLS);
 		
 		//byte[] b= FormatTransformer.xmlToCSV(doc, ";");
 	//	Document d = FormatTransformer.csvToXml(c);
