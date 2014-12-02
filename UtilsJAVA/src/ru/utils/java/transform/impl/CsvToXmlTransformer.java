@@ -4,15 +4,12 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.dom4j.Node;
 import org.dom4j.tree.DefaultElement;
 
 import ru.utils.java.transform.ToDocumentTransformer;
@@ -20,7 +17,6 @@ import ru.utils.java.transform.ToDocumentTransformer;
 public class CsvToXmlTransformer implements ToDocumentTransformer{
 	
 	private final byte[] csv;
-	private final Map<String, Integer> elementIndexes;
 	private final Document xml;
 	private List<String> csvContent;
 	private String csvTitle;
@@ -28,7 +24,6 @@ public class CsvToXmlTransformer implements ToDocumentTransformer{
 	
 	public CsvToXmlTransformer(byte[] csv, String delimiter) {
 		this.csv = csv;
-		this.elementIndexes = new HashMap<String, Integer>();
 		this.xml = DocumentHelper.createDocument();
 		this.delimiter = delimiter;
 		this.csvContent = new LinkedList<String>();
@@ -78,47 +73,34 @@ public class CsvToXmlTransformer implements ToDocumentTransformer{
 	}
 	
 	private void processCsvLine(List<String> titleValues, List<String> lineValues) {
-
 		for (int i = 0; i < titleValues.size(); i++) {
 			String elementTitle = titleValues.get(i);
-			addElement(elementTitle, titleValues, lineValues);
+			addElementIfNeeded(elementTitle, titleValues, lineValues);
 		}
 	}
 	
-	private void addElement(String elementTitle, List<String> titleValues, List<String> lineValues) {
+	private void addElementIfNeeded(String elementTitle, List<String> titleValues, List<String> lineValues) {
 		String elementValue = lineValues.get(titleValues.indexOf(elementTitle));
 		addElementAndCorrectIndexes(elementTitle, elementValue, titleValues, lineValues);
-	}
-	
-	
-	private boolean checkAddingNeededAndCorrectIndexes(String elementName, String elementTitle, String elementValue, String xPathToAddElementAt) {
-		if (elementValue == null || "".equals(elementValue)) {
-			return false;
-		}
-		
-		if (!isIndexElement(elementTitle)) {
-			return true;
-		} else {
-			List nodes = xml.selectNodes(xPathToAddElementAt + "/" + elementName + "[" + elementValue + "]");
-			return (nodes == null || nodes.size() == 0) ? true : false;
-		}
 	}
 	
 	private void addElementAndCorrectIndexes(String elementTitle, String elementValue, List<String> titleValues, List<String> lineValues) {
 		String elementName = getElementNameFromTitle(elementTitle);
 		String elementXPath = getElementXPathFromTitle(elementTitle);
+		boolean isIndexElement = isIndexElement(elementTitle);
 		String xPathToAddElementAt = getXPathToAddElementAt(elementXPath, titleValues, lineValues);
+		String xPathWithElementNode = xPathToAddElementAt.concat("/").concat(elementName).concat("[").concat(elementValue).concat("]");
 		
-		if (!checkAddingNeededAndCorrectIndexes(elementName, elementTitle, elementValue, xPathToAddElementAt)) {
+		if (!isAddingNeeded(isIndexElement, elementValue, xPathWithElementNode)) {
 			return;
 		}
 		
-		if (("/").equals(xPathToAddElementAt)) {
+		if (isRootXPath(xPathToAddElementAt)) {
 			xml.addElement(elementName);
 		} else {
 			DefaultElement parent = (DefaultElement)(xml.selectNodes(xPathToAddElementAt).get(0));
 			Element el = parent.addElement(elementName);
-			if (!isIndexElement(elementTitle)) {
+			if (!isIndexElement) {
 				el.setText(elementValue);
 			}
 		}
@@ -128,7 +110,6 @@ public class CsvToXmlTransformer implements ToDocumentTransformer{
 		if (elementTitle == null || "".equals(elementTitle)) {
 			return null;
 		}
-		
 		String name = elementTitle.substring(elementTitle.lastIndexOf("/") + 1);
 		return name;
 	}
@@ -137,9 +118,12 @@ public class CsvToXmlTransformer implements ToDocumentTransformer{
 		if (elementTitle == null || "".equals(elementTitle)) {
 			return null;
 		}
-		
 		String xPath = elementTitle.substring(0, elementTitle.lastIndexOf("/"));
 		return xPath;
+	}
+	
+	private boolean isIndexElement(String titleValue) {
+		return titleValue != null && titleValue.startsWith("_");
 	}
 	
 	private String getXPathToAddElementAt(String titleXPath, List<String> titleValues, List<String> lineValues) {
@@ -151,8 +135,8 @@ public class CsvToXmlTransformer implements ToDocumentTransformer{
 		String inputXPath = titleXPath.startsWith("_") ? titleXPath : "_".concat(titleXPath);
 		String xPathToAdd = inputXPath;
 		List<String> xPathParts = new LinkedList<String>();
-		
 		xPathParts.add(inputXPath);
+		
 		while (!xPathToAdd.equals("_")) {
 			int delimiterIndex = xPathToAdd.lastIndexOf("/");
 			String part = inputXPath.substring(0, delimiterIndex);
@@ -163,14 +147,28 @@ public class CsvToXmlTransformer implements ToDocumentTransformer{
 		}
 		
 		for (String part : xPathParts) {
-			String xPathIndex = lineValues.get(titleValues.indexOf(part));
-			inputXPath = inputXPath.replaceAll(part, part.concat("[").concat(xPathIndex).concat("]"));
+			String partIndex = lineValues.get(titleValues.indexOf(part));
+			inputXPath = inputXPath.replaceAll(part, part.concat("[").concat(partIndex).concat("]"));
 		}
 		
 		return inputXPath.substring(1);
 	}
 	
-	private boolean isIndexElement(String titleValue) {
-		return titleValue != null && titleValue.startsWith("_");
+	private boolean isAddingNeeded(boolean isIndexElement, String elementValue, String xPathWithElementNode) {
+		if (elementValue == null || "".equals(elementValue)) {
+			return false;
+		}
+		
+		if (!isIndexElement) {
+			return true;
+		} else {
+			@SuppressWarnings("rawtypes")
+			List nodes = xml.selectNodes(xPathWithElementNode);
+			return (nodes == null || nodes.size() == 0) ? true : false;
+		}
+	}
+	
+	private boolean isRootXPath(String xPath) {
+		return "/".equals(xPath);
 	}
 }
