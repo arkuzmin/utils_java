@@ -14,11 +14,11 @@ public class FormatTransformer {
 		return (new XmlToExcelTransformer(xml, excelType, EXCEL_SHEET_NAME)).transform();
 	}
 	
-	public static Document csvToXml(byte[] csv, String delimiter) {
-		return (new CsvToXmlTransformer(csv, delimiter)).transform();
+	public static Document csvToXml(byte[] csvBase64, String delimiter) {
+		return (new CsvToXmlTransformer(csvBase64, delimiter)).transform();
 	}
 	
-	public static Document excelToXml(byte[] excel, ExcelTypes excelType) {
-		return (new ExcelToXmlTransformer(excel, excelType, EXCEL_SHEET_NAME)).transform();
+	public static Document excelToXml(byte[] excelBase64, ExcelTypes excelType) {
+		return (new ExcelToXmlTransformer(excelBase64, excelType, EXCEL_SHEET_NAME)).transform();
 	}
 }

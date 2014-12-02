@@ -9,6 +9,7 @@ import java.io.OutputStreamWriter;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -30,8 +31,8 @@ public class ExcelToXmlTransformer implements ToDocumentTransformer {
 	private List<String> csvContent;
 	private byte[] csv;
 	
-	public ExcelToXmlTransformer(byte[] excel, ExcelTypes excelType, final String EXCEL_SHEET_NAME) {
-		this.excel = excel;
+	public ExcelToXmlTransformer(byte[] excelBase64, ExcelTypes excelType, final String EXCEL_SHEET_NAME) {
+		this.excel = Base64.decodeBase64(excelBase64);
 		this.excelType = excelType;
 		this.csvContent = new LinkedList<String>();
 		this.EXCEL_SHEET_NAME = EXCEL_SHEET_NAME;
