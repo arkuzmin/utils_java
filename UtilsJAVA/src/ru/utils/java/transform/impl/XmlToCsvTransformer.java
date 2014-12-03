@@ -11,7 +11,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.codec.binary.Base64;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
@@ -37,7 +36,7 @@ public class XmlToCsvTransformer implements FromDocumentTransformer {
 	
 	public byte[] transform() {
 		parseDocumentRecursively(xml.getRootElement());
-		return Base64.encodeBase64(getResultsAsByteArray());
+		return getResultsAsByteArray();
 	}
 	
 	private void parseDocumentRecursively(Element element) {

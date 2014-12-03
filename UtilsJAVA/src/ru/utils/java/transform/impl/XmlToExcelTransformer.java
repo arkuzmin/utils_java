@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -45,7 +44,7 @@ public class XmlToExcelTransformer implements FromDocumentTransformer {
 			e.printStackTrace();
 		}
 		
-		return Base64.encodeBase64(result);
+		return result;
 	}
 	
 	private void extractCsvTitleAndContent() throws Exception {

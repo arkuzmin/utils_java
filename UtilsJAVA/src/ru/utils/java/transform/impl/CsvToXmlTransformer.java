@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.codec.binary.Base64;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -23,8 +22,8 @@ public class CsvToXmlTransformer implements ToDocumentTransformer{
 	private String csvTitle;
 	private final String delimiter;
 	
-	public CsvToXmlTransformer(byte[] csvBase64, String delimiter) {
-		this.csv = Base64.decodeBase64(csvBase64);
+	public CsvToXmlTransformer(byte[] csv, String delimiter) {
+		this.csv = csv;
 		this.xml = DocumentHelper.createDocument();
 		this.delimiter = delimiter;
 		this.csvContent = new LinkedList<String>();
