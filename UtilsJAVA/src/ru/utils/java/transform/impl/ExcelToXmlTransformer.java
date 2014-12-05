@@ -72,7 +72,7 @@ public class ExcelToXmlTransformer implements ToDocumentTransformer {
 	}
 	
 	private void readCsvContent(Sheet sheet) {
-		for (int i = 1; i < sheet.getLastRowNum(); i++) {
+		for (int i = 1; i <= sheet.getLastRowNum(); i++) {
 			Row row = sheet.getRow(i);
 			StringBuilder sb = new StringBuilder("");
 			for (int j = 0; j < row.getLastCellNum(); j++) {
