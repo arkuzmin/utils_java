@@ -55,7 +55,7 @@ public class XmlToExcelTransformer implements FromDocumentTransformer {
 		
 		try { 
 			bais = new ByteArrayInputStream(csv);
-			br = new BufferedReader(new InputStreamReader(bais));
+			br = new BufferedReader(new InputStreamReader(bais, "UTF8"));
 			csvTitle = br.readLine();
 			String contentLine = null;
 			while ((contentLine = br.readLine()) != null && !"".equals(contentLine)) {

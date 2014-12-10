@@ -158,16 +158,19 @@ public class XmlToCsvTransformer implements FromDocumentTransformer {
 	}
 
 	private byte[] getResultsAsByteArray() {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(baos));
+		ByteArrayOutputStream baos = null; 
+		BufferedWriter bw = null; 
 		byte[] result = null;
 		try {
+			baos = new ByteArrayOutputStream();
+			bw = new BufferedWriter(new OutputStreamWriter(baos, "UTF8"));
+			
 			writeTitle(bw);
 			writeContent(bw);
 			baos.flush();
 			bw.flush();
 			result = baos.toByteArray();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			closeStreams(bw, baos);
