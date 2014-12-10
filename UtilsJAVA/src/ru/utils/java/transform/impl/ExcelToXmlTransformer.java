@@ -91,7 +91,7 @@ public class ExcelToXmlTransformer implements ToDocumentTransformer {
 		
 		try {
 			baos = new ByteArrayOutputStream();
-			bw = new BufferedWriter(new OutputStreamWriter(baos));
+			bw = new BufferedWriter(new OutputStreamWriter(baos, "UTF8"));
 			writeCsvTitle(bw);
 			writeCsvContent(bw);
 			bw.flush();

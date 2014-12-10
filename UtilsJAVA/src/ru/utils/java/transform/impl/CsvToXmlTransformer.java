@@ -41,12 +41,12 @@ public class CsvToXmlTransformer implements ToDocumentTransformer{
 	}
 	
 	private void extractCsvTitleAndContent() throws Exception {
-		ByteArrayInputStream bais = new ByteArrayInputStream(csv);
-		BufferedReader br = new BufferedReader(new InputStreamReader(bais));
+		ByteArrayInputStream bais = null;
+		BufferedReader br = null;
 		
 		try { 
 			bais = new ByteArrayInputStream(csv);
-			br = new BufferedReader(new InputStreamReader(bais));
+			br = new BufferedReader(new InputStreamReader(bais, "UTF8"));
 			csvTitle = br.readLine();
 			String contentLine = null;
 			while ((contentLine = br.readLine()) != null && !"".equals(contentLine)) {
